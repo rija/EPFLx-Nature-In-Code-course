@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Genetic Drift</title>
+	<link rel="stylesheet" href="">
+	<script>
+		var p = 0.5; // q= 1 - p
+		var N = 1000;
+		var generations = 1000;
+
+
+		function round_number(value, decimals) {
+			var shifter = Math.pow(10,decimals);
+			return Math.round(value*shifter)/shifter;
+		}
+
+		function next_generation() {
+			var draws = 2*N;
+			var a1 = 0;
+			var a2 = 0;
+
+			for (var i = 0; i < draws; i++) {
+				if( Math.random() <= p ) {
+					a1 = a1 + 1;
+				}
+				else {
+					a2 = a2 + 1;
+				}
+			}
+			p = a1 / draws;
+		}
+
+		for (var i = 0; i < generations; i++) {
+			next_generation();
+			console.log("generation " + i , round_number(p,4), round_number(1-p,4));
+		}
+	</script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Genetic Drift</title>
+	<link rel="stylesheet" href="">
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+	<script src="draw.js"></script>
+	<script>
+		var p;
+		var N = 2000;
+		var generations = 20000;
+		var data = [];
+
+		function next_generation(simulation_data) {
+			var draws = 2*N;
+			var a1 = 0;
+			var a2 = 0;
+
+			for (var i = 0; i < draws; i++) {
+				if( Math.random() <= p ) {
+					a1 = a1 + 1;
+				}
+				else {
+					a2 = a2 + 1;
+				}
+			}
+			p = a1 / draws;
+			simulation_data.push(p);
+		}
+
+		function simulation(simulation_counter) {
+			p = 0.5;
+			for (var i = 0; i < generations; i++) {
+				next_generation(data[simulation_counter]);
+			}
+		}
+
+		for (var i = 0; i < 10; i++) {
+			data.push([]);
+			simulation(i);
+		}
+
+		draw_line_chart(data, "Generation", "p", ["Population size:", N, "Generations:", generations ]);
+	</script>
+</body>
+</html>
