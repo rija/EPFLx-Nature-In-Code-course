@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Genetic Drift</title>
+	<link rel="stylesheet" href="">
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+	<script src="draw.js"></script>
+	<script>
+		var p;
+		var N = 100000;
+		var generations = 100;
+		var simulations = 10;
+		var data = [];
+		var population_sizes = [];
+
+		function next_generation(simulation_data, current_N) {
+			var draws = 2*current_N;
+			var a1 = 0;
+			var a2 = 0;
+
+			for (var i = 0; i < draws; i++) {
+				if( Math.random() <= p ) {
+					a1 = a1 + 1;
+				}
+				else {
+					a2 = a2 + 1;
+				}
+			}
+			p = a1 / draws;
+			simulation_data.push(p);
+		}
+
+		function simulation(simulation_counter) {
+			p = 0.5;
+			var population_size;
+			for (var i = 0; i < generations; i++) {
+				if (i%10 == 9) {
+					population_size = 10;
+				}
+				else {
+					population_size = N;
+				}
+				population_sizes.push(population_size);
+				next_generation(data[simulation_counter], population_size);
+			}
+		}
+
+		function effective_population_size(allNs)
+		{
+			var denominators = 0;
+
+			for (var i = 0; i < allNs.length; i++) {
+				denominators += 1/allNs[i];
+			}
+
+			return Math.round(allNs.length / denominators) ;
+
+		}
+
+		for (var i = 0; i < simulations; i++) {
+			data.push([]);
+			simulation(i);
+		}
+
+		var Ne = effective_population_size(population_sizes);
+
+		draw_line_chart(data, "Generation", "p", ["Effect. Pop. size:", Ne, "Generations:", generations ]);
+	</script>
+</body>
+</html>
